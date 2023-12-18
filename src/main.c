@@ -6,7 +6,7 @@
 /*   By: rbourgea <rbourgea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/18 10:55:10 by rbourgea          #+#    #+#             */
-/*   Updated: 2023/12/18 12:56:34 by rbourgea         ###   ########.fr       */
+/*   Updated: 2023/12/18 14:59:53 by rbourgea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,19 +19,13 @@ t_cmd g_cmd[3] =
     { NULL, NULL },
 };
 
-int md5(int ac, char **av) {
-    (void)ac;
-    (void)av;
-    return 0;
-}
-
 int sha256(int ac, char **av) {
     (void)ac;
     (void)av;
     return 0;
 }
 
-int	usage(char *cmd)
+int	ssl_usage(char *cmd)
 {
 	ft_putstr_fd("ft_ssl: Error: '", 2);
 	ft_putstr_fd(cmd, 2);
@@ -57,7 +51,7 @@ int	init_cmd(int ac, char **av)
 			return (g_cmd[i].exec(ac - 1, av + 1));
 		i++;
 	}
-	return (usage(cmd));
+	return (ssl_usage(cmd));
 }
 
 int	parse_stdin()

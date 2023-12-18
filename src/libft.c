@@ -6,11 +6,16 @@
 /*   By: rbourgea <rbourgea@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/18 11:02:12 by rbourgea          #+#    #+#             */
-/*   Updated: 2023/12/18 12:41:34 by rbourgea         ###   ########.fr       */
+/*   Updated: 2023/12/18 15:47:51 by rbourgea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/ft_ssl.h"
+
+void	ft_putchar(char c)
+{
+	write(1, &c, 1);
+}
 
 void	ft_putchar_fd(char c, int fd)
 {
@@ -120,6 +125,16 @@ char	*ft_strdup(const char *s1)
 	return (ft_strcpy(dup, s1));
 }
 
+void	ft_putstr(char const *s)
+{
+	size_t	size;
+
+	if (!s)
+		return ;
+	size = ft_strlen(s);
+	write(1, s, size);
+}
+
 int		ft_getline(const int fd, char **line)
 {
 	char	buff[2];
@@ -140,4 +155,55 @@ int		ft_getline(const int fd, char **line)
 	*line = ft_strdup(dup);
 	ft_strdel(&dup);
 	return (ret);
+}
+
+size_t	ft_readfile(const int fd, char **buf)
+{
+	char	buff[1024];
+	char	*dup;
+	char	*tmp;
+	int		ret;
+	size_t	len;
+
+	dup = ft_strnew(0);
+	len = 0;
+	while ((ret = read(fd, buff, 1023)) > 0)
+	{
+		len += ret;
+		buff[ret] = 0;
+		tmp = dup;
+		dup = ft_strjoin(dup, buff);
+		ft_strdel(&tmp);
+	}
+	*buf = ft_strdup(dup);
+	ft_strdel(&dup);
+	(*buf)[len] = 0;
+	return (len);
+}
+
+void	*ft_memcpy(void *destination, const void *source, size_t size)
+{
+	unsigned	char			*str1;
+	const	unsigned	char	*str2;
+
+	str1 = (unsigned char *)destination;
+	str2 = (unsigned char *)source;
+	if (!size || destination == source)
+		return (destination);
+	while (size--)
+		*str1++ = *str2++;
+	return (destination);
+}
+
+void	*ft_memset(void *pointer, int value, size_t count)
+{
+	unsigned	int		i;
+	unsigned	char	*c;
+
+	i = 0;
+	c = (unsigned char *)pointer;
+	while (i < count)
+		c[i++] = (unsigned char)value;
+	pointer = (void *)c;
+	return (pointer);
 }

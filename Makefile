@@ -6,7 +6,7 @@
 #    By: rbourgea <rbourgea@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/24 16:00:27 by rbourgea          #+#    #+#              #
-#    Updated: 2023/12/18 11:17:05 by rbourgea         ###   ########.fr        #
+#    Updated: 2023/12/18 16:17:12 by rbourgea         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,10 +31,14 @@ RESET   	=	\033[0m
 NAME		=	ft_ssl
 CC			=	gcc
 
-INC_FILES	=	ft_ssl.h
+INC_FILES	=	ft_ssl.h \
+				md5.h
 
 SRC_FILES	=	main.c \
-				libft.c
+				libft.c \
+				md5.c \
+				md5_digest.c \
+				md5_transform.c
 
 INC_DIR		=	inc
 SRC_DIR		=	src
