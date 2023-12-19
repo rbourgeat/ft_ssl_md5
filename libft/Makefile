@@ -5,8 +5,8 @@
 #                                                     +:+ +:+         +:+      #
 #    By: rbourgea <rbourgea@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2023/12/19 12:40:33 by rbourgea          #+#    #+#              #
-#    Updated: 2023/12/19 16:22:21 by rbourgea         ###   ########.fr        #
+#    Created: 2023/12/19 13:35:27 by rbourgea          #+#    #+#              #
+#    Updated: 2023/12/19 13:59:44 by rbourgea         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,44 +28,36 @@ RESET   	=	\033[0m
 # 💾 VARIABLES
 # **************************************************************************** #
 
-NAME		=	ft_ssl
+NAME		=	libft.a
+HEADER		=	libft.h
 
 CC			=	gcc
-FLAGS		=	-Wall -Wextra -Werror -g3 -ggdb -fsanitize=address
+CFLAGS		=	-Wall -Werror -Wextra
+
+DIR_SRC		=	src
+DIR_OBJ		=	obj
+DIR_SUB		=	gnl \
+				is \
+				lst \
+				malloc_free \
+				mem \
+				put \
+				str \
+				to
 
 INCLUDE		= 	include/
-LIBFT_DIR	=	./libft
-SRC_DIR		=	src
-OBJ_DIR		=	obj
 
-LIBFT_LIB	=	libft.a
+SRC_DIR		=	$(foreach dir, $(DIR_SUB), $(addprefix $(DIR_SRC)/, $(dir)))
+OBJ_DIR		=	$(foreach dir, $(DIR_SUB), $(addprefix $(DIR_OBJ)/, $(dir)))
 
-SRC			=	ft_ssl.c \
-				ft_ssl_read_hash_file.c \
-				ft_ssl_print.c \
-				parsing/parsing.c \
-				parsing/parsing_argv.c \
-				md5/md5.c \
-				md5/md5_algorithm.c \
-				sha256/sha256.c \
-				sha256/sha256_algorithm.c \
-				sha256/sha256_utily.c \
-				sha256/sha256_utily2.c \
-				sha512/sha512.c \
-				sha512/sha512_algorithm.c \
-				sha512/sha512_utily.c \
-				sha512/sha512_utily2.c
-
-OBJ			=	$(SRC:%.c=$(OBJ_DIR)/%.o)
-
-$(OBJ_DIR)/%.o:	$(SRC_DIR)/%.c
-				@mkdir -p $(@D)
-				$(CC) $(FLAGS) -c -o $@ $< -I $(INCLUDE)
+SRC			=	$(foreach dir, $(SRC_DIR), $(wildcard $(dir)/*.c))
+OBJ			=	$(subst $(DIR_SRC), $(DIR_OBJ), $(SRC:.c=.o))
 
 RM_DIR		=	rm -rf
 RM_FILE		=	rm -f
 
-#DEBUG
+LIBC		=	ar -rcs
+
 SUCCESS		=	$(C_GOOD)SUCCESS$(C_NO)
 OK			=	$(C_OK)OK$(C_NO)
 
@@ -73,31 +65,28 @@ OK			=	$(C_OK)OK$(C_NO)
 # 📖 RULES
 # **************************************************************************** #
 
-all:		$(NAME)
-
 $(NAME):	$(OBJ)
-			@make -C $(LIBFT_DIR) all
-			@$(CC) -o $(NAME) $(FLAGS) $^ $(LIBFT_DIR)/$(LIBFT_LIB)
+			@$(LIBC) $(NAME) $(OBJ)
 			@echo "$(BOLD)$(GREEN)[✓] $(NAME) BUILD DONE$(RESET)"
 
-$(OBJ_DIR)/%.o:	$(SRC_DIR)/%.c
-			@mkdir -p $(@D)
-			@$(CC) $(FLAGS) -c -o $@ $< -I $(INCLUDE)
+$(OBJ): 	| $(OBJ_DIR)
 
-clean:
-			@make -C ${LIBFT_DIR}/ clean
-			@${RM_DIR} ${OBJ_DIR}
-			@echo "$(BOLD)$(RED)[♻︎] DELETE $(NAME) OBJS DONE$(RESET)"
+$(OBJ_DIR):
+			@mkdir -p $(DIR_OBJ) $(OBJ_DIR)
 
-fclean:
-			@make -C ${LIBFT_DIR}/ fclean
-			@${RM_DIR} ${OBJ_DIR}
-			@${RM_FILE} $(NAME)
-			@echo "$(BOLD)$(RED)[♻︎] DELETE $(NAME) DONE$(RESET)"
+$(DIR_OBJ)/%.o: $(DIR_SRC)/%.c ${INCLUDE}${HEADER} Makefile
+				@${CC} ${CFLAGS} -I ${INCLUDE} -o $@ -c $<
 
-re:			fclean all
+all			:	$(NAME)  
 
-.PHONY: all clean fclean re bonus
+clean		:
+				@$(RM_DIR) $(DIR_OBJ)
+				@echo "$(BOLD)$(RED)[♻︎] DELETE LIBFT OBJS DONE$(RESET)"
 
-MAKEFLAGS += --no-print-directory
-MAKEFLAGS += --no-warn-undefined-variables
+fclean		:	clean
+				@$(RM_FILE) $(NAME)
+				@echo "$(BOLD)$(RED)[♻︎] DELETE $(NAME) DONE$(RESET)"
+
+re			:	fclean all
+
+.PHONY		: all clean fclean re bonus
